@@ -15,8 +15,8 @@ std::string HeartbeatMonitorClient::statusMsg() {
         status_idx2 = rand() % 5;
     }
     else {
-        status_idx1 = 0;
-        status_idx2 = 0;
+        status_idx1 = m_is_stop_status_off? 0: 5;
+        status_idx2 = status_idx1;
         m_active = true;
     }
     rep_tree.put("AliveAt", timestampNow());
@@ -93,7 +93,10 @@ void HeartbeatMonitorClient::run() {
 
 int main(int argc, char **argv) {
     ecc_base ecc;
-    if (ecc.load_pubkey("./ecpubkey.pem") == -1) {
+    
+    std::string public_key_path = (argc == 2)? argv[1]: "./ecpubkey.pem";
+    
+    if (ecc.load_pubkey(public_key_path) == -1) {
         std::cout << "Could not read the public key." << std::endl;
         return -1;
     }

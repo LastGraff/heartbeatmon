@@ -95,8 +95,9 @@ void HeartbeatMonitorServer::run() {
 
 int main(int argc, char **argv) {
     ecc_base ecc;
-    
-    if (ecc.load_privkey("./ecprivkey.pem") == -1) {
+    std::string private_key_path = (argc == 2)? argv[1]: "./ecprivkey.pem";
+
+    if (ecc.load_privkey(private_key_path) == -1) {
         std::cout << "Could not read the private key." << std::endl;
         return -1;
     }

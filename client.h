@@ -14,13 +14,14 @@
 
 class HeartbeatMonitorClient {
 private:
-    const char* c_status_a[5] = {"OFF", "OK", "WARNING", "ERROR", "CRITICAL"};
+    const char* c_status_a[6] = {"OFF", "OK", "WARNING", "ERROR", "CRITICAL", "false"};
 
     zmq::context_t *m_context;
     zmq::socket_t *m_status_socket;
     zmq::socket_t *m_control_socket;
     char *m_status_address;
     char *m_control_address;
+    bool m_is_stop_status_off;
     std::thread *m_thread_p;
     ecc_base *m_ecc_p;
     
@@ -33,10 +34,11 @@ private:
     void setSockOpt(zmq::socket_t *socket, int linger, int timeout);
     void listenControl();
 public:
-    HeartbeatMonitorClient(std::string status_address, std::string control_address, ecc_base *ecc_p, int linger = 0, int timeout = 500):
+    HeartbeatMonitorClient(std::string status_address, std::string control_address, ecc_base *ecc_p, bool is_stop_status_off = false, int linger = 0, int timeout = 500):
                                         m_context(new zmq::context_t(1)),
                                         m_status_socket(new zmq::socket_t(*m_context, ZMQ_REP)),
                                         m_control_socket(new zmq::socket_t(*m_context, ZMQ_REP)),
+                                        m_is_stop_status_off(is_stop_status_off),
                                         m_thread_p(nullptr),
                                         m_ecc_p(ecc_p)
     {
